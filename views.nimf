@@ -1,0 +1,51 @@
+#? stdtmpl | standard
+#
+#
+#proc genEditForm*(id: int, content: string, done: bool): string =
+ <form class="form-group" method="post" action="/edit/$id">
+<div class="input-group">
+                  <label class="form-checkbox">
+                    <input type="checkbox" name="done"
+#if done:
+checked
+#end if
+                    ><i class="form-icon"></i>
+                  </label>
+                  <input name="content" value="$content" class="form-input" type="text">
+            <input type="submit" value="Submit">
+                </div>
+
+</form>
+
+#end proc
+#proc genPage*(todos: seq[Todo]): string =
+<div class="container">
+<div class="columns">
+<div class="column col-4 col-mx-auto"  hx-target="closest div" hx-swap="outerHTML swap:1s">
+<h1 class="mt-2">Todos!</h1>
+#for todo in todos:
+    <div hx-target="this" hx-swap="outerHTML">
+        #if todo.done:
+            ✔️
+        #else:
+        &nbsp;
+        &nbsp;
+        #end if
+        &nbsp;
+            <span hx-get="/edit/$todo.id" class="">
+            $todo.content
+            </span>
+            &nbsp;
+            <span hx-delete="/delete/$todo.id">
+            <i class="icon float-right icon-cross" ></i>
+            </span>
+
+    </div>
+#end for
+<div class="mt-2">
+${genEditForm(-1, "", false)}
+</div>
+</div>
+</div>
+</div>
+#end proc
